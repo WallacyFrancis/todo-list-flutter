@@ -1,12 +1,18 @@
 # myapp
 
-A new Flutter project.
+Este projeto é um aplicativo Flutter para gerenciar tarefas (To-Do List).
+
+## Tecnologia Utilizada
+
+Este projeto foi desenvolvido utilizando o framework **Flutter**, que permite a criação de aplicativos nativos para diversas plataformas a partir de um único código-fonte.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Para executar este projeto, certifique-se de ter o Flutter SDK instalado em sua máquina.
 
-A few resources to get you started if this is your first Flutter project:
+1. Clone este repositório:
+
+
 
 - [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
 - [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
