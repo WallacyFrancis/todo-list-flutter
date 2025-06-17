@@ -6,12 +6,14 @@ class TaskItem extends StatelessWidget {
   // funções de callback para notificar o widget das alterações
   final VoidCallback onChanged;
   final VoidCallback onDelete;
+  final VoidCallback onEdit;
 
   // construtor dos dados necessários
   const TaskItem({
     super.key,
     required this.task,
     required this.onChanged,
+    required this.onEdit,
     required this.onDelete,
   });
 
@@ -40,10 +42,23 @@ class TaskItem extends StatelessWidget {
             fontSize: 16
           ),
         ),
-          // O botão de deletar à direita
-        trailing: IconButton(
-          icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-          onPressed: onDelete, // Chama o callback de deleção ao ser pressionado
+        // O botão de deletar à direita
+        // trailing: IconButton(
+        //   icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+        //   onPressed: onDelete, // Chama o callback de deleção ao ser pressionado
+        // ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit_outlined, color: Colors.blueAccent),
+              onPressed: onEdit, // Chama o callback de deleção ao ser pressionado
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+              onPressed: onDelete, // Chama o callback de deleção ao ser pressionado
+            ),
+          ],
         ),
         onTap: onChanged, // Permite clicar em qualquer lugar do item para marcar/desmarcar
       ),

@@ -3,7 +3,7 @@ import '../models/tasks_models.dart';
 import '../widgets/talk_list_item.dart';
 
 class TodoScreen extends StatefulWidget {
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:4133814274.
+  // Suggested code may be subject to a license. Learn more: ~LicenseLog:4133814274.
   const TodoScreen({super.key});
 
   @override
@@ -24,7 +24,9 @@ class _TodoScreenState extends State<TodoScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
           backgroundColor: const Color(0xFF161b22),
           title: const Text('Nova Tarefa'),
           content: TextField(
@@ -46,12 +48,60 @@ class _TodoScreenState extends State<TodoScreen> {
                   _addTask(_taskController.text);
                   Navigator.pop(context);
                 }
-              }, 
+              },
               child: const Text('Adicionar'),
             ),
           ],
         );
-      }
+      },
+    );
+  }
+
+  // Função para exibir um diálogo e editar uma tarefa existente
+  void _showEditTaskDialog(Task task) {
+    _taskController.text = task.title;
+    _showTaskDialog(
+      title: "Editar Tarefa",
+      onConfirm: () {
+        if (_taskController.text.isNotEmpty) {
+          _editTask(task, _taskController.text);
+          Navigator.pop(context);
+        }
+      },
+    );
+  }
+
+  // Função genérica para mostrar o diálogo, evitando repetição de código
+  void _showTaskDialog({
+    required String title,
+    required VoidCallback onConfirm,
+  }) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          backgroundColor: const Color(0xFF161b22),
+          title: Text(title),
+          content: TextField(
+            controller: _taskController,
+            autofocus: true,
+            decoration: const InputDecoration(
+              hintText: 'O que você precisa fazer?',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancelar'),
+            ),
+            ElevatedButton(onPressed: onConfirm, child: const Text('Salvar')),
+          ],
+        );
+      },
     );
   }
 
@@ -63,8 +113,14 @@ class _TodoScreenState extends State<TodoScreen> {
           id: DateTime.now().toString(),
           title: title,
           isDone: false, // ID único baseado no tempo atual
-        )
+        ),
       );
+    });
+  }
+
+  void _editTask(Task task, String title) {
+    setState(() {
+      task.title = title;
     });
   }
 
@@ -83,43 +139,42 @@ class _TodoScreenState extends State<TodoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text("Minhas Tarefas"),
-      ),
-      body: _tasks.isEmpty
-        // Se a lista estiver vazia, mostra uma mensagem centralizada
-        ? const Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.checklist_rtl, size: 80, color: Colors.grey),
-                SizedBox(height: 16),
-                Text(
-                  'Nenhuma tarefa ainda!',
-                  style: TextStyle(fontSize: 18, color: Colors.grey),
+      appBar: AppBar(centerTitle: true, title: const Text("Minhas Tarefas")),
+      body:
+          _tasks.isEmpty
+              // Se a lista estiver vazia, mostra uma mensagem centralizada
+              ? const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.checklist_rtl, size: 80, color: Colors.grey),
+                    SizedBox(height: 16),
+                    Text(
+                      'Nenhuma tarefa ainda!',
+                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                    ),
+                    Text(
+                      'Adicione uma nova tarefa usando o botão +',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ],
                 ),
-                Text(
-                  'Adicione uma nova tarefa usando o botão +',
-                  style: TextStyle(color: Colors.grey),
-                )
-              ],
-            )
-          )
-          // Se a lista não estiver vazia, mostra a ListView
-          : ListView.builder(
-              padding: const EdgeInsets.all(8.0),
-              itemCount: _tasks.length,
-              itemBuilder: (context, index) {
-                final task = _tasks[index];
-                return TaskItem(
-                  task: task,
-                  onChanged: () => _toggleTaskStatus(task),
-                  onDelete: () => _deleteTask(task),
-                );
-              },
-            ),
-        
+              )
+              // Se a lista não estiver vazia, mostra a ListView
+              : ListView.builder(
+                padding: const EdgeInsets.all(8.0),
+                itemCount: _tasks.length,
+                itemBuilder: (context, index) {
+                  final task = _tasks[index];
+                  return TaskItem(
+                    task: task,
+                    onChanged: () => _toggleTaskStatus(task),
+                    onEdit: () => _showEditTaskDialog(task),
+                    onDelete: () => _deleteTask(task),
+                  );
+                },
+              ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddTask,
         tooltip: 'Adicionar Tarefa',
